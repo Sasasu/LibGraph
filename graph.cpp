@@ -1,9 +1,4 @@
-#include<iostream>
-#include<vector>
-#include<set>
-#include<cstdlib>
-#include<queue>
-#include<map>
+#include<bits/stdc++.h>
 using namespace std;
 
 #define tmplt template <class T>
