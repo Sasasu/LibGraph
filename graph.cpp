@@ -36,6 +36,8 @@ class Graph {
 	map<T, W> shortestPathFrom(T);
 	void printLevel(T);
 	void bfs(T);	
+	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
+	bool hasCycle();
 };
 
 template <class T,class W>
@@ -155,6 +157,37 @@ void Graph<T,W>::printLevel(T source)
 	}
 }
 
+template <class T, class W>
+bool Graph<T, W>::hasCycleUtil(T v, map<T, bool> &visited, map<T, bool>  &recStack){
+	if(visited[v] == false) {
+		// Mark the current node as visited and part of recursion stack
+		visited[v] = true;
+		recStack[v] = true;
+
+		// Recur for all the vertices adjacent to this vertex
+		for(int i=0; i<AdjList[v].size(); i++){
+			T u = AdjList[v][i].first;
+			if(!visited[u] && hasCycleUtil(u, visited, recStack))
+				return true;
+			else if(recStack[u])
+				return true;
+		}
+	}
+	recStack[v] = false;  // remove the vertex from recursion stack
+	return false;
+}
+
+template <class T, class W>
+bool Graph<T, W>::hasCycle(){
+	map<T, bool> visited, recStack;
+	typename set<T>::iterator it;
+	for(it=vertices.begin(); it!=vertices.end(); it++)
+		if(hasCycleUtil(*it, visited, recStack))
+			return true;
+	return false;
+}
+		
+
 int main(){
 	Graph<int,int>  a;
 	a.addEdge(1, 2, 3);
@@ -168,5 +201,5 @@ int main(){
 	a.printLevel(1);
 	map<int, int> dist = a.shortestPathFrom(1);
 	cout<<dist[1]<<' '<<dist[2]<<' '<<dist[3]<<endl;
-
+	cout<<a.hasCycle()<<endl;
 }
