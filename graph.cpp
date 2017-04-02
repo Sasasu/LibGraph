@@ -1,113 +1,112 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-#define tmplt template <class T>
 
-tmplt
+template <class T,class W>
 class Edge {
 	public:
 	T u, v;
-	int w;
+	W w;
 	Edge(){}
 	Edge(T _u, T _v, int _w){
 		u = _u;
 		v = _v;
 		w = _w;
 	}
-	int getWeight(){
+	W getWeight(){
 		return w;
 	}
 };
 
-tmplt
+template <class T,class W>
 class Graph {
 	set   < T >                       vertices;	// Vertex set
-	vector< Edge<T> >                 edges;	// Edges set
-	map< T, vector< pair< T, int> > > AdjList;	// Adjacency List
-	map< T, map< T, int> >            AdjMat;	// Adjacency Matrix
+	vector< Edge<T,W> >                 edges;	// Edges set
+	map< T, vector< pair< T, W> > > AdjList;	// Adjacency List
+	map< T, map< T, W> >            AdjMat;	// Adjacency Matrix
 	public:
 	Graph(){}
-	Graph(vector<T>, vector< Edge<T> >);
-	void addEdge(T, T, int);
+	Graph(vector<T>, vector< Edge<T,W> >);
+	void addEdge(T, T, W);
 	void createAdjacencyList();
 	void printAdjacencyList();
 	void createAdjacencyMatrix();
 	void printAdjacencyMatrix();
-	map<T, int> shortestPathFrom(T);
+	map<T, W> shortestPathFrom(T);
 };
 
-tmplt
-Graph<T>::Graph(vector<T> v, vector< Edge<T> > e){
+template <class T,class W>
+Graph<T,W>::Graph(vector<T> v, vector< Edge<T,W> > e){
 	vertices = v;
 	edges    = e;
 }
 
-tmplt
-void Graph<T>::addEdge(T u, T v, int w){
-	edges.push_back(Edge<T>(u, v, w));
+template <class T,class W>
+void Graph<T,W>::addEdge(T u, T v, W w){
+	edges.push_back(Edge<T,W>(u, v, w));
 	vertices.insert(u);
 	vertices.insert(v);
 }
 
-tmplt
-void Graph<T>::createAdjacencyList(){
+template <class T,class W>
+void Graph<T,W>::createAdjacencyList(){
 	for(int i=0;i<edges.size();i++){
-		Edge<T> e = edges[i];
+		Edge<T,W> e = edges[i];
 		AdjList[e.u].push_back(make_pair(e.v, e.w));
 	}
 }
 
-tmplt
-void Graph<T>::printAdjacencyList(){
-	typename map< T, vector< pair< T, int> > >::iterator u;
+template <class T,class W>
+void Graph<T,W>::printAdjacencyList(){
+	typename map< T, vector< pair< T, W> > >::iterator u;
 	for(u=AdjList.begin(); u!=AdjList.end(); u++){
 		cout<<u->first<<" - ";
 		for(int i=0; i<(u->second).size(); i++){
-			pair< T, int > v = u->second[i];
+			pair< T, W > v = u->second[i];
 			cout<<"( "<<v.first<<", "<<v.second<<" ) ";
 		}
 		cout<<endl;
 	}
 }
 
-tmplt
-void Graph<T>::createAdjacencyMatrix(){
+template <class T,class W>
+void Graph<T,W>::createAdjacencyMatrix(){
 	for(int i=0;i<edges.size();i++){
-		Edge<T> e = edges[i];
+		Edge<T,W> e = edges[i];
 		AdjMat[e.u][e.v] = e.w;
 	}
 }
 
-tmplt
-void Graph<T>::printAdjacencyMatrix(){
+template <class T,class W>
+void Graph<T,W>::printAdjacencyMatrix(){
 	typename map< T, map< T, int > >::iterator i;
 	for(i=AdjMat.begin(); i!=AdjMat.end(); i++){
-		typename map<T, int>::iterator j;
+		typename map<T, W>::iterator j;
 		for(j=(i->second).begin(); j!=(i->second).end(); j++)
 			cout<<j->second<<' ';
 		cout<<endl;
 	}
 }
 
-tmplt 
-map<T, int> Graph<T>::shortestPathFrom(T s){
+template <class T,class W>
+map<T, W> Graph<T,W>::shortestPathFrom(T s){
 	if(AdjList.size()==0)
 		createAdjacencyList();
-	map<T, int> dist;
+	map<T, W> dist;
 	typename set<T>::iterator it;
 	for(it=vertices.begin(); it!=vertices.end(); it++)
 		dist[*it] = 1000000;
-	priority_queue< pair<int, T> > q;
+	priority_queue< pair<W, T> > q;
 	q.push(make_pair(0, s));
 	dist[s] = 0;
 	while(!q.empty()){
-		pair<int, T> u_p = q.top();
+		pair<W, T> u_p = q.top();
 		q.pop();
 		T u = u_p.second;
 		for(int i=0; i<AdjList[u].size();i++){
-			pair< T, int > v_p = AdjList[u][i];
+			pair< T, W> v_p = AdjList[u][i];
 			T v = v_p.first;
-			int w = v_p.second;
+			W w = v_p.second;
 			if(dist[v] > dist[u]+w){
 				dist[v] = dist[u]+w;
 				q.push(make_pair(dist[v], v));
@@ -118,7 +117,7 @@ map<T, int> Graph<T>::shortestPathFrom(T s){
 }
 
 int main(){
-	Graph<int>  a;
+	Graph<int,int>  a;
 	a.addEdge(1, 2, 3);
 	a.addEdge(2, 3, 1);
 	a.addEdge(1, 3, 1);
