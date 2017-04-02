@@ -1,7 +1,6 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-
 template <class T,class W>
 class Edge {
 	public:
@@ -24,7 +23,9 @@ class Graph {
 	vector< Edge<T,W> >                 edges;	// Edges set
 	map< T, vector< pair< T, W> > > AdjList;	// Adjacency List
 	map< T, map< T, W> >            AdjMat;	// Adjacency Matrix
-	public:
+	map< T, int>                    Level;  //BFS output levels
+	map< T, bool>                   bfsVisit; //BFS Visit 
+ 	public:
 	Graph(){}
 	Graph(vector<T>, vector< Edge<T,W> >);
 	void addEdge(T, T, W);
@@ -33,6 +34,8 @@ class Graph {
 	void createAdjacencyMatrix();
 	void printAdjacencyMatrix();
 	map<T, W> shortestPathFrom(T);
+	void printLevel(T);
+	void bfs(T);	
 };
 
 template <class T,class W>
@@ -115,6 +118,42 @@ map<T, W> Graph<T,W>::shortestPathFrom(T s){
 	}
 	return dist;
 }
+template <class T,class W>
+void Graph<T,W>::bfs(T source)
+{
+	//Initialisation
+	Level.clear();
+	bfsVisit.clear();
+	//Level.insert(pair< T , int>(source,0) );
+	Level[source] = 0;
+	bfsVisit[source] = true;
+	queue <T> q;
+	q.push(source);
+	while(!q.empty())
+	{
+		T u = q.front();
+		q.pop();
+		for(int i=0;i<AdjList[u].size();i++)
+		{
+			Level[AdjList[u][i].first] = Level[u] + 1;
+			bfsVisit[AdjList[u][i].first] = true;
+			q.push(AdjList[u][i].first);
+		}
+	}
+}
+
+template <class T,class W>
+void Graph<T,W>::printLevel(T source)
+{
+	bfs(source);
+	typename map<T,int>::iterator it;
+	it = Level.begin();
+	while(it!=Level.end())
+	{
+		cout<<"Vertex "<<it->first<<" is at Level "<<it->second<<endl;
+		it++;
+	}
+}
 
 int main(){
 	Graph<int,int>  a;
@@ -125,6 +164,8 @@ int main(){
 	a.createAdjacencyMatrix();
 	a.printAdjacencyList();
 	a.printAdjacencyMatrix();
+	a.bfs(1);
+	a.printLevel(1);
 	map<int, int> dist = a.shortestPathFrom(1);
 	cout<<dist[1]<<' '<<dist[2]<<' '<<dist[3]<<endl;
 
