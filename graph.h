@@ -71,8 +71,8 @@ Graph<T,W>::Graph(vector<T> v, vector< Edge<T,W> > e){
  * @param (W) w 
  *   weight of edge from u to v
  */
-template <class T,class W>
-void Graph<T,W>::addEdge(T u, T v, W w){
+template <class T, class W>
+void Graph<T, W>::addEdge(T u, T v, W w){
 	edges.push_back(Edge<T,W>(u, v, w));
 	vertices.insert(u);
 	vertices.insert(v);
@@ -119,8 +119,8 @@ void Graph<T,W>::createAdjacencyMatrix(){
 /*
  * Fucnction to print Adjacency Matrix
  */
-template <class T,class W>
-void Graph<T,W>::printAdjacencyMatrix(){
+template <class T, class W>
+void Graph<T, W>::printAdjacencyMatrix(){
 	typename map< T, map< T, int > >::iterator i;
 	for(i=AdjMat.begin(); i!=AdjMat.end(); i++){
 		typename map<T, W>::iterator j;
@@ -300,21 +300,4 @@ bool Graph<T, W>::hasCycle(){
 		if(hasCycleUtil(*it, visited, recStack))
 			return true;
 	return false;
-}
-		
-
-int main(){
-	Graph<int,int>  a;
-	a.addEdge(1, 2, 3);
-	a.addEdge(2, 3, 1);
-	a.addEdge(1, 3, 1);
-	a.createAdjacencyList();
-	a.createAdjacencyMatrix();
-	a.printAdjacencyList();
-	a.printAdjacencyMatrix();
-	a.bfs(1);
-	a.printLevel(1);
-	map<int, int> dist = a.shortestPathFrom(1);
-	cout<<dist[1]<<' '<<dist[2]<<' '<<dist[3]<<endl;
-	cout<<a.hasCycle()<<endl;
 }
