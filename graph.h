@@ -42,11 +42,12 @@ class Graph {
 	void printAdjacencyMatrix();
 	map<T, W> dijkstras(T);
 	map<T, W> bellmanFord(T);
-	map<T, W> shortestPathFrom(T, bool negative = false);
+	map<T, W> getShortestPathsFrom(T, bool negative = false);
 	void printLevel(T);
 	void bfs(T);	
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
+	map<T, map<T, W> > getAllPairShortestPath();
 };
 
 /*
@@ -205,7 +206,7 @@ map<T, W> Graph<T, W>::bellmanFord(T s){
  *   mapping of weights of shortest paths
  */
 template <class T, class W>
-map<T, W> Graph<T,W>::shortestPathFrom(T s, bool negative){
+map<T, W> Graph<T,W>::getShortestPathsFrom(T s, bool negative){
 	if(negative)
 		return bellmanFord(s);
 	return dijkstras(s);
@@ -300,4 +301,36 @@ bool Graph<T, W>::hasCycle(){
 		if(hasCycleUtil(*it, visited, recStack))
 			return true;
 	return false;
+}
+
+/*
+ * Function to get all pair shortest paths
+ * Uses Floyd-Warshall Algorithm
+ * @returns (map<T, map<T, W> >)
+ *   mapping of vertex pairs to their shortest path weights
+ */
+template <class T, class W>
+map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
+	if(!AdjMat.size())
+		createAdjacencyMatrix();
+	map<T, map<T, W> > dist;
+	typename set<T>::iterator u, v, w;
+	for(u=vertices.begin(); u!=vertices.end();u++)
+		for(v=vertices.begin(); v!=vertices.end(); v++)
+			if(*u==*v)
+				dist[*u][*v] == 0;
+			else if(AdjMat[*u][*v] == 0)
+				dist[*u][*v] = INF;
+			else
+				dist[*u][*v] = AdjMat[*u][*v];
+	for(w=vertices.begin(); w!=vertices.end(); w++)
+		for(u=vertices.begin(); u!=vertices.end(); u++)
+			for (v=vertices.begin(); v!=vertices.end(); v++)
+				if(dist[*u][*w] + dist[*w][*v] < dist[*u][*v])
+					dist[*u][*v] = dist[*u][*w] + dist[*w][*v];
+	for(u=vertices.begin(); u!=vertices.end();u++)
+		for(v=vertices.begin(); v!=vertices.end(); v++)
+			if(dist[*u][*v] == INF)
+				dist[*u][*v] = -1;
+	return dist;
 }

@@ -13,7 +13,13 @@ int main(){
 	a.printAdjacencyMatrix();
 	a.bfs(1);
 	a.printLevel(1);
-	map<int, int> dist = a.shortestPathFrom(1);
+	map<int, int> dist = a.getShortestPathsFrom(1);
 	cout<<dist[1]<<' '<<dist[2]<<' '<<dist[3]<<endl;
 	cout<<a.hasCycle()<<endl;
+	map<int, map<int, int> > dists = a.getAllPairShortestPath();
+	for(int i=1; i<=3; i++){
+		for (int j=1; j<=3; j++)
+			cout<<dists[i][j]<<'\t';
+		cout<<endl;
+	}
 }
