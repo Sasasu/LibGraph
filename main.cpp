@@ -22,4 +22,14 @@ int main(){
 			cout<<dists[i][j]<<'\t';
 		cout<<endl;
 	}
+	Tree<int,int >t;
+	t.addEdge(1,2,100);
+	t.addEdge(1,3,100);
+	t.createAdjacencyList();
+	t.printAdjacencyList();
+	t.addEdge(2,3,100);	
+	
+	t.createAdjacencyList();
+	t.printAdjacencyList();
+	return 0;
 }

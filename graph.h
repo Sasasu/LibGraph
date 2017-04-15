@@ -26,13 +26,14 @@ class Edge {
 
 template <class T, class W>
 class Graph {
+public:
 	set   < T >                     vertices;       // Vertex set
 	vector< Edge<T,W> >             edges;	        // Edges set
-	map< T, vector< pair< T, W> > > AdjList;	// Adjacency List
+	map< T, vector< pair< T, W> > > AdjList;		// Adjacency List
 	map< T, map< T, W> >            AdjMat;	        // Adjacency Matrix
 	map< T, int>                    Level;          // BFS output levels
 	map< T, bool>                   bfsVisit;       // BFS Visit 
- 	public:
+public: 
 	Graph(){}
 	Graph(vector<T>, vector< Edge<T,W> >);
 	void addEdge(T, T, W);
@@ -40,15 +41,95 @@ class Graph {
 	void printAdjacencyList();
 	void createAdjacencyMatrix();
 	void printAdjacencyMatrix();
-	map<T, W> dijkstras(T);
-	map<T, W> bellmanFord(T);
-	map<T, W> getShortestPathsFrom(T, bool negative = false);
+	map<T,W> dijkstras(T);
+	map<T,W> bellmanFord(T);
+	map<T,W> getShortestPathsFrom(T, bool negative = false);
 	void printLevel(T);
 	void bfs(T);	
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
 	map<T, map<T, W> > getAllPairShortestPath();
 };
+
+template <class T,class W>
+class Tree:public Graph<T,W> 
+{
+
+	set   < T >                     vertices;       // Vertex set
+	vector< Edge<T,W> >             edges;	        // Edges set
+
+public:
+	Tree(){};
+	//Tree(vector <T>, vector < Edge<T,W> >);
+	//bool isValidTree(vector <T>, vector < Edge<T,W> >);
+	void addEdge(T,T,W);
+	bool isValidTree(set<T>,vector< Edge<T,W > >);
+	bool checkConnected(set<T>,vector< Edge<T,W > >);
+};
+
+template <class T, class W>
+void Tree<T, W>::addEdge(T u, T v, W w)
+{
+	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
+	Graph<T,W>::vertices.insert(u);
+	Graph<T,W>::vertices.insert(v);
+
+	try
+	{
+		if( !isValidTree(vertices,edges))
+			throw 1;
+	}
+	catch(int x)
+	{
+		cout<<"Error : Invalid Edge added\n";
+	}
+}
+
+// template <class T,class W>
+// Tree<T,W>::Tree(vector<T> v, vector< Edge<T,W> > e)
+// {
+// 	try
+// 	{
+// 		if ( ! (isValidTree(v,e)) )
+// 			throw 1;
+		
+// 		vertices = v;
+// 		edges    = e;	
+// 	}
+// 	catch (int x)
+// 	{
+// 		cout<<"Error : Expected Tree\n";
+// 	}	
+// }
+
+template <class T,class W>
+bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e)
+{
+	bool isAcyclic,isConnected;
+
+	isAcyclic = !Graph<T,W>::hasCycle();	
+	isConnected = checkConnected(v,e);
+	cout<<isAcyclic<<isConnected<<endl;
+	if(isAcyclic && isConnected)
+		return true;
+	else
+		return false;
+}
+
+template <class T,class W>
+bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e)
+{
+	// T s = *v.begin();
+	Graph<T,W>::bfs(*v.begin());
+	typename set<T>::iterator it = v.begin();
+	while(it!=v.end())
+	{
+		if( !(Graph<T,W>::bfsVisit[*it]) )
+			return false;
+		it++;
+	}
+	return true;
+}
 
 /*
  * Graph class Constructor
@@ -62,6 +143,7 @@ Graph<T,W>::Graph(vector<T> v, vector< Edge<T,W> > e){
 	vertices = v;
 	edges    = e;
 }
+
 
 /*
  * Function to add edge
@@ -84,6 +166,11 @@ void Graph<T, W>::addEdge(T u, T v, W w){
  */
 template <class T,class W>
 void Graph<T,W>::createAdjacencyList(){
+	for(int i=0;i<edges.size();i++)
+	{
+		Edge<T,W> e = edges[i];
+		AdjList[e.u].clear();
+	}
 	for(int i=0;i<edges.size();i++){
 		Edge<T,W> e = edges[i];
 		AdjList[e.u].push_back(make_pair(e.v, e.w));
