@@ -21,7 +21,7 @@ int main(){
 		for (int j=1; j<=3; j++)
 			cout<<dists[i][j]<<'\t';
 		cout<<endl;
-	}
+	}*/
 	Tree<int,int >t;
 	t.addEdge(1,2,100);
 	t.addEdge(1,3,100);
@@ -31,8 +31,8 @@ int main(){
 	
 	t.createAdjacencyList();
 	t.printAdjacencyList();
-	*/
-	Graph<int,int>  b;
+	
+	/*Graph<int,int>  b;
 	
 
 	b.addEdge(0,1,1);
@@ -56,5 +56,6 @@ int main(){
 	Graph<int,int> c(b);
 	c.createAdjacencyList();
 	c.printAdjacencyList();
+	*/
 	return 0;
 }

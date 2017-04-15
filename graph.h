@@ -1,9 +1,9 @@
-#include<iostream>
-#include<vector>
-#include<set>
-#include<cstdlib>
-#include<queue>
-#include<map>
+#include <iostream>
+#include <vector>
+#include <set>
+#include <cstdlib>
+#include <queue>
+#include <map>
 using namespace std;
 
 #define INF 10000000
@@ -23,6 +23,9 @@ class Edge {
 		return w;
 	}
 };
+
+template <class T, class W>
+class Tree;
 
 template <class T, class W>
 class Graph {
@@ -55,23 +58,38 @@ public:
 
 	vector<T> dfs(T);
 	void dfsExplore(T);
+	Tree<T,W> minimumSpanningTree();
+
 };
 
 template <class T,class W>
 class Tree:public Graph<T,W> 
 {
 
-	set   < T >                     vertices;       // Vertex set
-	vector< Edge<T,W> >             edges;	        // Edges set
+	//set   < T >                     vertices;       // Vertex set
+	//vector< Edge<T,W> >             edges;	        // Edges set
 
 public:
 	Tree(){};
+	Tree(Tree&); 
 	//Tree(vector <T>, vector < Edge<T,W> >);
 	//bool isValidTree(vector <T>, vector < Edge<T,W> >);
 	void addEdge(T,T,W);
 	bool isValidTree(set<T>,vector< Edge<T,W > >);
 	bool checkConnected(set<T>,vector< Edge<T,W > >);
 };
+
+/*
+ * Tree class Constructor(Copy Constructor)
+ * @param (Tree) Tr
+ * 
+ */
+template <class T,class W>
+Tree<T, W>::Tree(Tree & Tr)
+{
+	Graph<T,W>::vertices   = Tr.vertices;       
+	Graph<T,W>::edges      = Tr.edges;	        
+}
 
 template <class T, class W>
 void Tree<T, W>::addEdge(T u, T v, W w)
@@ -82,8 +100,10 @@ void Tree<T, W>::addEdge(T u, T v, W w)
 
 	try
 	{
-		if( !isValidTree(vertices,edges))
+		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges))
 			throw 1;
+		else
+			cout<<"Edge added successfully\n";
 	}
 	catch(int x)
 	{
@@ -115,7 +135,7 @@ bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e)
 
 	isAcyclic = !Graph<T,W>::hasCycle();	
 	isConnected = checkConnected(v,e);
-	cout<<isAcyclic<<isConnected<<endl;
+	
 	if(isAcyclic && isConnected)
 		return true;
 	else
@@ -209,7 +229,7 @@ void Graph<T,W>::createAdjacencyMatrix(){
 }
 
 /*
- * Fucnction to print Adjacency Matrix
+ * Function to print Adjacency Matrix
  */
 template <class T, class W>
 void Graph<T, W>::printAdjacencyMatrix(){
@@ -426,6 +446,7 @@ map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
 	return dist;
 }
 
+
 /* 
  * Explore Function used in DFS 
  * @param (T) source
@@ -447,13 +468,17 @@ void Graph<T,W>::dfsExplore(T source)
 		if(dfsVisit[vertex] == false)
 			dfsExplore(vertex);
 	}	
-}		
+
+}	
+
+
 /* 
  * Function to apply Depth First Search on graph
  * @param (T) source
  *   source of required DFS
  * @returns vector of DFS Traversal Sequence
  */
+
 template <class T,class W>
 vector<T> Graph<T,W>::dfs(T source)
 {
@@ -461,11 +486,9 @@ vector<T> Graph<T,W>::dfs(T source)
 	dfsVisit.clear();
 	dfsSequence.clear();
 
-
 	typename set< T >::iterator it;
 	for(it = vertices.begin(); it!=vertices.end(); it++)
-	{	
-		
+	{			 
 		dfsVisit.insert(make_pair(*it,false));	
 	}
 
@@ -478,4 +501,6 @@ vector<T> Graph<T,W>::dfs(T source)
 	}
 
 	return dfsSequence;
+
 }
+
