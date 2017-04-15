@@ -38,7 +38,7 @@ public:
 
 public: 
 	Graph(){}
-	Graph(vector<T>, vector< Edge<T,W> >);
+	Graph(Graph&);
 	void addEdge(T, T, W);
 	void createAdjacencyList();
 	void printAdjacencyList();
@@ -138,18 +138,16 @@ bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e)
 }
 
 /*
- * Graph class Constructor
- * @param (vector<T>) v
- *   vector of vertices
- * @param (vector<EdgeT,W>>) e
- *   vector of edges
+ * Graph class Constructor(Copy Constructor)
+ * @param (Graph) G
+ * 
  */
 template <class T,class W>
-Graph<T,W>::Graph(vector<T> v, vector< Edge<T,W> > e){
-	vertices = v;
-	edges    = e;
+Graph<T, W>::Graph(Graph & G)
+{
+	vertices   = G.vertices;       
+	edges      = G.edges;	        
 }
-
 
 /*
  * Function to add edge
@@ -427,6 +425,12 @@ map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
 				dist[*u][*v] = -1;
 	return dist;
 }
+
+/* 
+ * Explore Function used in DFS 
+ * @param (T) source
+ *   source of required DFS
+ */
 
 template <class T,class W>
 void Graph<T,W>::dfsExplore(T source)

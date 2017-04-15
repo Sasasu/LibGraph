@@ -47,8 +47,14 @@ int main(){
 
 	vector<int> x = b.dfs(0);
 
-	for(int i=0;i<x.size();i++)
-		cout<<x[i]<<" ";
-	cout<<"\n";
+//	for(int i=0;i<x.size();i++)
+//		cout<<x[i]<<" ";
+//	cout<<"\n";
+
+
+
+	Graph<int,int> c(b);
+	c.createAdjacencyList();
+	c.printAdjacencyList();
 	return 0;
 }
