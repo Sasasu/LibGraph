@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(){
-	Graph<int,int>  a;
+	/*Graph<int,int>  a;
 	a.addEdge(1, 2, 3);
 	a.addEdge(2, 3, 1);
 	a.addEdge(1, 3, 1);
@@ -31,5 +31,24 @@ int main(){
 	
 	t.createAdjacencyList();
 	t.printAdjacencyList();
+	*/
+	Graph<int,int>  b;
+	
+
+	b.addEdge(0,1,1);
+	b.addEdge(0,2,1);
+	b.addEdge(2,0,1);
+	b.addEdge(1,2,1);
+	b.addEdge(2,3,1);
+	b.addEdge(3,3,0);
+	
+	b.createAdjacencyList();
+	//b.printAdjacencyList();
+
+	vector<int> x = b.dfs(0);
+
+	for(int i=0;i<x.size();i++)
+		cout<<x[i]<<" ";
+	cout<<"\n";
 	return 0;
 }

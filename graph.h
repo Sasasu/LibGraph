@@ -33,6 +33,9 @@ public:
 	map< T, map< T, W> >            AdjMat;	        // Adjacency Matrix
 	map< T, int>                    Level;          // BFS output levels
 	map< T, bool>                   bfsVisit;       // BFS Visit 
+	map< T, bool> 					dfsVisit;		//DFS Visit
+ 	vector< T > 					dfsSequence;	//DFS Sequence
+
 public: 
 	Graph(){}
 	Graph(vector<T>, vector< Edge<T,W> >);
@@ -49,6 +52,9 @@ public:
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
 	map<T, map<T, W> > getAllPairShortestPath();
+
+	vector<T> dfs(T);
+	void dfsExplore(T);
 };
 
 template <class T,class W>
@@ -420,4 +426,52 @@ map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
 			if(dist[*u][*v] == INF)
 				dist[*u][*v] = -1;
 	return dist;
+}
+
+template <class T,class W>
+void Graph<T,W>::dfsExplore(T source)
+{	
+	dfsVisit[source] = true;
+	dfsSequence.push_back(source);
+
+	vector< pair< T, W> > neighbours = AdjList[source];
+
+	for(int i = 0; i < neighbours.size(); i++)
+	{
+		int vertex = neighbours[i].first;
+
+		if(dfsVisit[vertex] == false)
+			dfsExplore(vertex);
+	}	
+}		
+/* 
+ * Function to apply Depth First Search on graph
+ * @param (T) source
+ *   source of required DFS
+ * @returns vector of DFS Traversal Sequence
+ */
+template <class T,class W>
+vector<T> Graph<T,W>::dfs(T source)
+{
+	//Initialisation
+	dfsVisit.clear();
+	dfsSequence.clear();
+
+
+	typename set< T >::iterator it;
+	for(it = vertices.begin(); it!=vertices.end(); it++)
+	{	
+		
+		dfsVisit.insert(make_pair(*it,false));	
+	}
+
+	dfsExplore(source);
+
+	for(it = vertices.begin(); it!=vertices.end(); it++)
+	{
+		if(dfsVisit[*it] == false)
+			dfsExplore(*it);
+	}
+
+	return dfsSequence;
 }
