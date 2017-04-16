@@ -1,45 +1,34 @@
+#ifndef GRAPH_H
+#define GRAPH_h
+
 #include <iostream>
 #include <vector>
 #include <set>
 #include <cstdlib>
 #include <queue>
 #include <map>
+#include "exception.h"
+#include "edge.h"
+#include "tree.h"
 using namespace std;
 
 #define INF 10000000
-
-template <class T, class W>
-class Edge {
-	public:
-	T u, v;
-	W w;
-	Edge(){}
-	Edge(T _u, T _v, int _w){
-		u = _u;
-		v = _v;
-		w = _w;
-	}
-	W getWeight(){
-		return w;
-	}
-};
 
 template <class T, class W>
 class Tree;
 
 template <class T, class W>
 class Graph {
-public:
+	protected:
 	set   < T >                     vertices;       // Vertex set
 	vector< Edge<T,W> >             edges;	        // Edges set
 	map< T, vector< pair< T, W> > > AdjList;		// Adjacency List
 	map< T, map< T, W> >            AdjMat;	        // Adjacency Matrix
-	map< T, int>                    Level;          // BFS output levels
+	map< T, int>                    bfsLevel;       // BFS output levels
 	map< T, bool>                   bfsVisit;       // BFS Visit 
-	map< T, bool> 					dfsVisit;		//DFS Visit
- 	vector< T > 					dfsSequence;	//DFS Sequence
-
-public: 
+	map< T, bool> 					dfsVisit;		// DFS Visit
+ 	vector< T > 					dfsSequence;	// DFS Sequence
+	public: 
 	Graph(){}
 	Graph(Graph&);
 	void addEdge(T, T, W);
@@ -47,124 +36,26 @@ public:
 	void printAdjacencyList();
 	void createAdjacencyMatrix();
 	void printAdjacencyMatrix();
-	map<T,W> dijkstras(T);
-	map<T,W> bellmanFord(T);
-	map<T,W> getShortestPathsFrom(T, bool negative = false);
-	void printLevel(T);
-	void bfs(T);	
-	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
-	bool hasCycle();
+	map<T, W> dijkstras(T);
+	map<T, W> bellmanFord(T);
+	map<T, W> getShortestPathsFrom(T, bool negative = false);
 	map<T, map<T, W> > getAllPairShortestPath();
-
+	map<T, int> bfs(T);	
 	vector<T> dfs(T);
 	void dfsExplore(T);
-	Tree<T,W> minimumSpanningTree();
-
+	void printLevel(T);
+	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
+	bool hasCycle();
+	Tree<T, W> minimumSpanningTree();
 };
-
-template <class T,class W>
-class Tree:public Graph<T,W> 
-{
-
-	//set   < T >                     vertices;       // Vertex set
-	//vector< Edge<T,W> >             edges;	        // Edges set
-
-public:
-	Tree(){};
-	Tree(Tree&); 
-	//Tree(vector <T>, vector < Edge<T,W> >);
-	//bool isValidTree(vector <T>, vector < Edge<T,W> >);
-	void addEdge(T,T,W);
-	bool isValidTree(set<T>,vector< Edge<T,W > >);
-	bool checkConnected(set<T>,vector< Edge<T,W > >);
-};
-
-/*
- * Tree class Constructor(Copy Constructor)
- * @param (Tree) Tr
- * 
- */
-template <class T,class W>
-Tree<T, W>::Tree(Tree & Tr)
-{
-	Graph<T,W>::vertices   = Tr.vertices;       
-	Graph<T,W>::edges      = Tr.edges;	        
-}
-
-template <class T, class W>
-void Tree<T, W>::addEdge(T u, T v, W w)
-{
-	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
-	Graph<T,W>::vertices.insert(u);
-	Graph<T,W>::vertices.insert(v);
-
-	try
-	{
-		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges))
-			throw 1;
-		else
-			cout<<"Edge added successfully\n";
-	}
-	catch(int x)
-	{
-		cout<<"Error : Invalid Edge added\n";
-	}
-}
-
-// template <class T,class W>
-// Tree<T,W>::Tree(vector<T> v, vector< Edge<T,W> > e)
-// {
-// 	try
-// 	{
-// 		if ( ! (isValidTree(v,e)) )
-// 			throw 1;
-		
-// 		vertices = v;
-// 		edges    = e;	
-// 	}
-// 	catch (int x)
-// 	{
-// 		cout<<"Error : Expected Tree\n";
-// 	}	
-// }
-
-template <class T,class W>
-bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e)
-{
-	bool isAcyclic,isConnected;
-
-	isAcyclic = !Graph<T,W>::hasCycle();	
-	isConnected = checkConnected(v,e);
-	
-	if(isAcyclic && isConnected)
-		return true;
-	else
-		return false;
-}
-
-template <class T,class W>
-bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e)
-{
-	// T s = *v.begin();
-	Graph<T,W>::bfs(*v.begin());
-	typename set<T>::iterator it = v.begin();
-	while(it!=v.end())
-	{
-		if( !(Graph<T,W>::bfsVisit[*it]) )
-			return false;
-		it++;
-	}
-	return true;
-}
 
 /*
  * Graph class Constructor(Copy Constructor)
  * @param (Graph) G
  * 
  */
-template <class T,class W>
-Graph<T, W>::Graph(Graph & G)
-{
+template <class T, class W>
+Graph<T, W>::Graph(Graph &G) {
 	vertices   = G.vertices;       
 	edges      = G.edges;	        
 }
@@ -190,12 +81,11 @@ void Graph<T, W>::addEdge(T u, T v, W w){
  */
 template <class T,class W>
 void Graph<T,W>::createAdjacencyList(){
-	for(int i=0;i<edges.size();i++)
-	{
+	for(int i=0;i<edges.size();i++) {
 		Edge<T,W> e = edges[i];
 		AdjList[e.u].clear();
 	}
-	for(int i=0;i<edges.size();i++){
+	for(int i=0;i<edges.size();i++) {
 		Edge<T,W> e = edges[i];
 		AdjList[e.u].push_back(make_pair(e.v, e.w));
 	}
@@ -331,13 +221,12 @@ map<T, W> Graph<T,W>::getShortestPathsFrom(T s, bool negative){
  *   mapping of vertices to their levels in BFS tree
  */
 template <class T,class W>
-void Graph<T,W>::bfs(T source)
+map<T, int> Graph<T,W>::bfs(T source)
 {
 	//Initialisation
-	Level.clear();
+	bfsLevel.clear();
 	bfsVisit.clear();
-	//Level.insert(pair< T , int>(source,0) );
-	Level[source] = 0;
+	bfsLevel[source] = 0;
 	bfsVisit[source] = true;
 	queue <T> q;
 	q.push(source);
@@ -347,21 +236,20 @@ void Graph<T,W>::bfs(T source)
 		q.pop();
 		for(int i=0;i<AdjList[u].size();i++)
 		{
-			Level[AdjList[u][i].first] = Level[u] + 1;
+			bfsLevel[AdjList[u][i].first] = bfsLevel[u] + 1;
 			bfsVisit[AdjList[u][i].first] = true;
 			q.push(AdjList[u][i].first);
 		}
 	}
+	return bfsLevel;
 }
 
 template <class T,class W>
-void Graph<T,W>::printLevel(T source)
-{
+void Graph<T, W>::printLevel(T source) {
 	bfs(source);
 	typename map<T,int>::iterator it;
-	it = Level.begin();
-	while(it!=Level.end())
-	{
+	it = bfsLevel.begin();
+	while(it!=bfsLevel.end()) {
 		cout<<"Vertex "<<it->first<<" is at Level "<<it->second<<endl;
 		it++;
 	}
@@ -385,7 +273,6 @@ bool Graph<T, W>::hasCycleUtil(T v, map<T, bool> &visited, map<T, bool>  &recSta
 		// Mark the current node as visited and part of recursion stack
 		visited[v] = true;
 		recStack[v] = true;
-
 		// Recur for all the vertices adjacent to this vertex
 		for(int i=0; i<AdjList[v].size(); i++){
 			T u = AdjList[v][i].first;
@@ -454,17 +341,12 @@ map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
  */
 
 template <class T,class W>
-void Graph<T,W>::dfsExplore(T source)
-{	
+void Graph<T,W>::dfsExplore(T source) {
 	dfsVisit[source] = true;
 	dfsSequence.push_back(source);
-
 	vector< pair< T, W> > neighbours = AdjList[source];
-
-	for(int i = 0; i < neighbours.size(); i++)
-	{
+	for(int i = 0; i < neighbours.size(); i++) {
 		int vertex = neighbours[i].first;
-
 		if(dfsVisit[vertex] == false)
 			dfsExplore(vertex);
 	}	
@@ -478,29 +360,21 @@ void Graph<T,W>::dfsExplore(T source)
  *   source of required DFS
  * @returns vector of DFS Traversal Sequence
  */
-
 template <class T,class W>
-vector<T> Graph<T,W>::dfs(T source)
-{
+vector<T> Graph<T,W>::dfs(T source) {
 	//Initialisation
 	dfsVisit.clear();
 	dfsSequence.clear();
-
 	typename set< T >::iterator it;
-	for(it = vertices.begin(); it!=vertices.end(); it++)
-	{			 
+	for(it = vertices.begin(); it!=vertices.end(); it++) {
 		dfsVisit.insert(make_pair(*it,false));	
 	}
-
 	dfsExplore(source);
-
-	for(it = vertices.begin(); it!=vertices.end(); it++)
-	{
+	for(it = vertices.begin(); it!=vertices.end(); it++) {
 		if(dfsVisit[*it] == false)
 			dfsExplore(*it);
 	}
-
 	return dfsSequence;
-
 }
 
+#endif
