@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #include "tree.h"
 using namespace std;
 
@@ -27,7 +27,7 @@ int main(){
 	t.addEdge(1,3,100);
 	t.createAdjacencyList();
 	t.printAdjacencyList();
-	// t.addEdge(2,3,100);	
+	//t.addEdge(2,3,100);	
 	
 	t.createAdjacencyList();
 	t.printAdjacencyList();

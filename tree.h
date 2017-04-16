@@ -26,32 +26,12 @@ Tree<T, W>::Tree(Tree &Tr) {
 
 template <class T, class W>
 void Tree<T, W>::addEdge(T u, T v, W w) {
+	if( ! (Graph<T,W>::edges.size()==0 || ( (Graph<T,W>::vertices.find(u)!=Graph<T,W>::vertices.end() && Graph<T,W>::vertices.find(v)==Graph<T,W>::vertices.end()) || (Graph<T,W>::vertices.find(u)==Graph<T,W>::vertices.end() && Graph<T,W>::vertices.find(v)!=Graph<T,W>::vertices.end())  ) ) )
+		throw Exception("Invalid Edge");
+
 	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
 	Graph<T,W>::vertices.insert(u);
 	Graph<T,W>::vertices.insert(v);
-	if(!isValidTree(Graph<T, W>::vertices,Graph<T, W>::edges))
-		throw Exception("Invalid Edge");
-}
-
-template <class T, class W>
-bool Tree<T, W>::isValidTree(set<T> v, vector< Edge<T, W> > e) {
-	bool isAcyclic   = !Graph<T,W>::hasCycle(), 
-	     isConnected = checkConnected(v,e);
-	if(isAcyclic && isConnected)
-		return true;
-	return false;
-}
-
-template <class T,class W>
-bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e){
-	Graph<T,W>::bfs(*v.begin());
-	typename set<T>::iterator it = v.begin();
-	while(it!=v.end()){
-		if(!(Graph<T,W>::bfsVisit[*it]) )
-			return false;
-		it++;
-	}
-	return true;
 }
 
 #endif
