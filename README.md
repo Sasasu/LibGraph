@@ -26,6 +26,7 @@ git clone http://github.com/Hrily/LibGraph
   - All Pair Shortest Path
   - Minimum Spanning Tree
 + Tree
+  - Topological sort
 
 ### Graph
 
@@ -91,8 +92,9 @@ map<int, map<int, int> > allPairShortestPath = G.getAllPairShortestPath();
 
 Minimum Spanning Tree returns Object of type `Tree`, which is defined in `tree.h`
 ```c++
-Tree<int, int> mst = G.minimumSpanningTree();
+Tree<int, int> mst = G.minimumSpanningTree(1);
 ```
+where `1` is the source
 
 ### Tree
 
@@ -124,3 +126,16 @@ try{
   cout<<"Exception: "<<e.getMessage()<<endl;
 }
 ```
+
+#### Topological Sort
+
+Topological sort of the Tree vector of the vertices listed topologically
+```
+vector<int> tpSort = T.topologicalSort();
+```
+
+### Contributors
+
++ Dhaval Khandla
++ Hrishikesh Hiraskar
++ Manish Kumar

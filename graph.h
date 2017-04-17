@@ -1,5 +1,5 @@
 #ifndef GRAPH_H
-#define GRAPH_h
+#define GRAPH_H
 
 #include <iostream>
 #include <vector>
@@ -9,7 +9,6 @@
 #include <map>
 #include "exception.h"
 #include "edge.h"
-#include "tree.h"
 using namespace std;
 
 #define INF 10000000
@@ -21,13 +20,13 @@ template <class T, class W>
 class Graph {
 	protected:
 	set   < T >                     vertices;       // Vertex set
-	vector< Edge<T,W> >             edges;	        // Edges set
-	map< T, vector< pair< T, W> > > AdjList;		// Adjacency List
+	vector< Edge<T,W> >             edges;          // Edges set
+	map< T, vector< pair< T, W> > > AdjList;        // Adjacency List
 	map< T, map< T, W> >            AdjMat;	        // Adjacency Matrix
 	map< T, int>                    bfsLevel;       // BFS output levels
 	map< T, bool>                   bfsVisit;       // BFS Visit 
-	map< T, bool> 					dfsVisit;		// DFS Visit
- 	vector< T > 					dfsSequence;	// DFS Sequence
+	map< T, bool>                   dfsVisit;       // DFS Visit
+ 	vector< T >                     dfsSequence;    // DFS Sequence
 	
 	public: 
 	Graph(){}
@@ -53,9 +52,10 @@ class Graph {
 };
 
 /*
- * Graph class Constructor(Copy Constructor)
+ * Copy constructor
+ * Clones given graph
  * @param (Graph) G
- * 
+ *    Graph to clone
  */
 template <class T, class W>
 Graph<T, W>::Graph(Graph &G) {
@@ -79,12 +79,22 @@ void Graph<T, W>::addEdge(T u, T v, W w){
 	vertices.insert(v);
 }
 
+/* 
+ * Function to get vertex set
+ * @returns (set<T, W)
+ *    set of vertices
+ */
 template<class T,class W>
 set<T,W> Graph<T,W>::getVertices()
 {
 	return vertices;
 }
 
+/*
+ * Function to get edge list
+ * @returns (vector<Edge>)
+ *    edge list vector
+ */
 template<class T,class W>
 vector< Edge<T,W> > Graph<T,W>::getEdges()
 {
@@ -365,7 +375,6 @@ map<T, map<T, W> > Graph<T, W>::getAllPairShortestPath(){
  * @param (T) source
  *   source of required DFS
  */
-
 template <class T,class W>
 void Graph<T,W>::dfsExplore(T source) {
 	dfsVisit[source] = true;
@@ -376,15 +385,15 @@ void Graph<T,W>::dfsExplore(T source) {
 		if(dfsVisit[vertex] == false)
 			dfsExplore(vertex);
 	}	
-
 }	
 
 
 /* 
  * Function to apply Depth First Search on graph
  * @param (T) source
- *   source of required DFS
- * @returns vector of DFS Traversal Sequence
+ *    source of required DFS
+ * @returns (vector<T>)
+ *    vector of DFS Traversal Sequence
  */
 template <class T,class W>
 vector<T> Graph<T,W>::dfs(T source) {
@@ -412,7 +421,7 @@ vector<T> Graph<T,W>::dfs(T source) {
  * @param (T) s
  *   source vertex
  * @returns (Tree<T,W>) 
- *   Object of class Tree 
+ *   MST of type Tree
  */
 template <class T, class W>
 Tree<T, W> Graph<T, W>::minimumSpanningTree(T s)
@@ -455,7 +464,6 @@ Tree<T, W> Graph<T, W>::minimumSpanningTree(T s)
 			if(u == v)
 			{
 				mst.addEdge(prev,u,AdjList[prev][i].second);
-				//cout<<prev<<" "<<v<<"\n";
 			}
 		}	
 
