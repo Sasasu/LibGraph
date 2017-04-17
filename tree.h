@@ -64,17 +64,17 @@ void Tree<T, W>::addEdge(T u, T v, W w)
 
 	try
 	{
-		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges))
+		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges, u))
 			throw Exception("Invalid Edge Added");
 	}
 	catch(Exception e)
 	{
-		// Graph<T,W>::edges.pop_back();
+		Graph<T,W>::edges.pop_back();
 	
-		// if(!flagu)
-		// Graph<T,W>::vertices.erase(u);
-		// if(!flagv)
-		// Graph<T,W>::vertices.erase(v);
+		if(!flagu)
+		Graph<T,W>::vertices.erase(u);
+		if(!flagv)
+		Graph<T,W>::vertices.erase(v);
 	
 		cout<<"Error : "<<e.getMessage()<<endl;
 	}
