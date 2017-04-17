@@ -47,6 +47,8 @@ class Graph {
 	void printLevel(T);
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
+	set<T,W> getVertices();
+	vector<Edge<T,W> > getEdges();
 	Tree<T, W> minimumSpanningTree(T);
 };
 
@@ -75,6 +77,18 @@ void Graph<T, W>::addEdge(T u, T v, W w){
 	edges.push_back(Edge<T,W>(u, v, w));
 	vertices.insert(u);
 	vertices.insert(v);
+}
+
+template<class T,class W>
+set<T,W> Graph<T,W>::getVertices()
+{
+	return vertices;
+}
+
+template<class T,class W>
+vector< Edge<T,W> > Graph<T,W>::getEdges()
+{
+	return edges;
 }
 
 /* 
@@ -430,7 +444,7 @@ Tree<T, W> Graph<T, W>::minimumSpanningTree(T s)
 			if(u == v)
 			{
 				mst.addEdge(prev,u,AdjList[prev][i].second);
-				cout<<prev<<" "<<v<<"\n";
+				//cout<<prev<<" "<<v<<"\n";
 			}
 		}	
 
