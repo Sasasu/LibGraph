@@ -21,7 +21,7 @@ int main(){
 		for (int j=1; j<=3; j++)
 			cout<<dists[i][j]<<'\t';
 		cout<<endl;
-	}*/
+	}
 	Tree<int,int >t;
 	t.addEdge(1,2,100);
 	t.addEdge(1,3,100);
@@ -31,28 +31,32 @@ int main(){
 	
 	t.createAdjacencyList();
 	t.printAdjacencyList();
-	
-	/*Graph<int,int>  b;
-	
+	*/
 
+	Graph<int, int > b;
 	b.addEdge(0,1,1);
 	b.addEdge(0,2,1);
 	b.addEdge(2,0,1);
 	b.addEdge(1,2,1);
 	b.addEdge(2,3,1);
-	b.addEdge(3,3,0);
+	b.addEdge(3,4,5);
+	b.addEdge(3,5,3);
+	b.addEdge(5,4,1);
 	
 	b.createAdjacencyList();
-	//b.printAdjacencyList();
+	/*b.printAdjacencyList();
 
 	vector<int> x = b.dfs(0);
 
-//	for(int i=0;i<x.size();i++)
-//		cout<<x[i]<<" ";
-//	cout<<"\n";
+	for(int i=0;i<x.size();i++)
+		cout<<x[i]<<" ";
+	cout<<"\n";
+	*/
 
+	Tree<int, int> t ;
+	t = b.minimumSpanningTree(0);
 
-
+	/*
 	Graph<int,int> c(b);
 	c.createAdjacencyList();
 	c.printAdjacencyList();

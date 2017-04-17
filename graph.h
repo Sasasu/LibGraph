@@ -28,6 +28,7 @@ class Graph {
 	map< T, bool>                   bfsVisit;       // BFS Visit 
 	map< T, bool> 					dfsVisit;		// DFS Visit
  	vector< T > 					dfsSequence;	// DFS Sequence
+	
 	public: 
 	Graph(){}
 	Graph(Graph&);
@@ -46,7 +47,7 @@ class Graph {
 	void printLevel(T);
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
-	Tree<T, W> minimumSpanningTree();
+	Tree<T, W> minimumSpanningTree(T);
 };
 
 /*
@@ -365,6 +366,10 @@ vector<T> Graph<T,W>::dfs(T source) {
 	//Initialisation
 	dfsVisit.clear();
 	dfsSequence.clear();
+
+	if(AdjList.size()==0)
+		createAdjacencyList();
+
 	typename set< T >::iterator it;
 	for(it = vertices.begin(); it!=vertices.end(); it++) {
 		dfsVisit.insert(make_pair(*it,false));	
@@ -375,6 +380,75 @@ vector<T> Graph<T,W>::dfs(T source) {
 			dfsExplore(*it);
 	}
 	return dfsSequence;
+}
+
+/*
+ * Function to calculate Minimum Spanning Tree using Prim's Algorithm
+ * @param (T) s
+ *   source vertex
+ * @returns (Tree<T,W>) 
+ *   Object of class Tree 
+ */
+template <class T, class W>
+Tree<T, W> Graph<T, W>::minimumSpanningTree(T s)
+{
+	if(AdjList.size()==0)
+		createAdjacencyList();
+	
+	Tree<T, W> mst;
+	map<T, W> key;
+	priority_queue< pair<W, T> , vector< pair<W, T> >, greater< pair<W, T> > > pri_q;
+	T prev;
+
+	typename set<T>::iterator it;
+	for(it=vertices.begin(); it!=vertices.end(); it++)
+	{	
+		if(*it!=s)
+		{	
+			key[*it] = INF;
+		}
+		else
+		{
+			key[*it] = 0;
+		}	
+		pri_q.push(make_pair(key[*it],*it));
+	}
+	
+	prev = s;
+	while(!pri_q.empty())
+	{
+		pair<W, T> u_p = pri_q.top();
+		pri_q.pop();
+
+		T u = u_p.second;
+		
+		for(int i=0; i<AdjList[prev].size();i++)
+		{
+			pair< T, W> v_p = AdjList[prev][i];
+			T v = v_p.first;
+
+			if(u == v)
+			{
+				mst.addEdge(prev,u,AdjList[prev][i].second);
+				cout<<prev<<" "<<v<<"\n";
+			}
+		}	
+
+		for(int i=0; i<AdjList[u].size();i++)
+		{
+			pair< T, W> v_p = AdjList[u][i];
+			T v = v_p.first;
+			W w = v_p.second;
+			if(key[v] > w)
+			{
+				key[v] = w;
+				pri_q.push(make_pair(key[v], v));
+			}
+		}
+		prev = u;
+	}
+
+	return mst;
 }
 
 #endif
