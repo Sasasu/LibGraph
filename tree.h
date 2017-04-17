@@ -15,8 +15,8 @@ class Tree:public Graph<T, W> {
 	Tree(){};
 	Tree(Tree&); 
 	void addEdge(T,T,W);
-	bool isValidTree(set<T>, vector< Edge<T, W > >);
-	bool checkConnected(set<T>, vector< Edge<T, W > >);
+	bool isValidTree(set<T>, vector< Edge<T, W > >,T);
+	bool checkConnected(set<T>, vector< Edge<T, W > >,T);
 	void explore(T);
 	vector<T> topologicalSort();
 };
@@ -46,42 +46,46 @@ template <class T, class W>
 void Tree<T, W>::addEdge(T u, T v, W w)
 {
 	int flagu=0,flagv=0;
+	T s ;
 	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
 	
 	if(Graph<T,W>::vertices.find(u)!=Graph<T,W>::vertices.end())
 		flagu = 1;
+	else
+		s = u;
 	if(Graph<T,W>::vertices.find(v)!=Graph<T,W>::vertices.end())
 		flagv = 1;
+	else 
+		s = v;
 	
 	Graph<T,W>::vertices.insert(u);
 	Graph<T,W>::vertices.insert(v);
 
 	try
 	{
-		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges))
+		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges,u))
 			throw 1;
 	}
 	catch(int x)
 	{
-		Graph<T,W>::edges.pop_back();
+		// Graph<T,W>::edges.pop_back();
 	
-		if(!flagu)
-		Graph<T,W>::vertices.erase(u);
-		if(!flagv)
-		Graph<T,W>::vertices.erase(v);
+		// if(!flagu)
+		// Graph<T,W>::vertices.erase(u);
+		// if(!flagv)
+		// Graph<T,W>::vertices.erase(v);
 	
 		cout<<"Error : Invalid Edge added\n";
 	}
 }
 
 template <class T,class W>
-bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e)
+bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e,T s)
 {
-	bool isAcyclic,isConnected;
-
+	bool isAcyclic=false,isConnected=false;
+	Graph<T,W>::createAdjacencyList();
 	isAcyclic = !Graph<T,W>::hasCycle();	
-	isConnected = checkConnected(v,e);
-	cout<<isAcyclic<<isConnected<<endl;
+	isConnected = checkConnected(v,e,s);
 	if(isAcyclic && isConnected)
 		return true;
 	else
@@ -89,11 +93,12 @@ bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e)
 }
 
 template <class T,class W>
-bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e)
+bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e,T s)
 {
 	// T s = *v.begin();
-	Graph<T,W>::bfs(*v.begin());
+	Graph<T,W>::bfs(s);
 	typename set<T>::iterator it = v.begin();
+
 	while(it!=v.end())
 	{
 		if( !(Graph<T,W>::bfsVisit[*it]) )

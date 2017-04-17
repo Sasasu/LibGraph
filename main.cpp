@@ -33,17 +33,17 @@ int main(){
 	t.printAdjacencyList();
 	*/
 
-	Graph<int, int > b;
-	b.addEdge(0,1,1);
-	b.addEdge(0,2,1);
-	b.addEdge(2,0,1);
-	b.addEdge(1,2,1);
-	b.addEdge(2,3,1);
-	b.addEdge(3,4,5);
-	b.addEdge(3,5,3);
-	b.addEdge(5,4,1);
+	// Graph<int, int > b;
+	// b.addEdge(0,1,1);
+	// b.addEdge(0,2,1);
+	// b.addEdge(2,0,1);
+	// b.addEdge(1,2,1);
+	// b.addEdge(2,3,1);
+	// b.addEdge(3,4,5);
+	// b.addEdge(3,5,3);
+	// b.addEdge(5,4,1);
 	
-	b.createAdjacencyList();
+	// b.createAdjacencyList();
 	/*b.printAdjacencyList();
 
 	vector<int> x = b.dfs(0);
@@ -53,13 +53,25 @@ int main(){
 	cout<<"\n";
 	*/
 
-	Tree<int, int> t ;
-	t = b.minimumSpanningTree(0);
+	// Tree<int, int> t ;
+	// t = b.minimumSpanningTree(0);
 
+	Tree <int,int> t;
+	t.addEdge(1,2,100);
+	t.addEdge(3,1,100);
+	t.addEdge(2,3,100);
+	// cout<<'a'<<endl;
 	/*
 	Graph<int,int> c(b);
 	c.createAdjacencyList();
 	c.printAdjacencyList();
 	*/
+
+	// Graph <int,int>g;
+	// g.addEdge(1,2,100);
+	// g.addEdge(2,3,100);
+	// g.addEdge(3,1,100);
+	// map<int,int> mp = g.bfs(1);
+	// g.printLevel(1);
 	return 0;
 }

@@ -194,6 +194,8 @@ map<T, W> Graph<T, W>::dijkstras(T s){
  */
 template <class T,  class W>
 map<T, W> Graph<T, W>::bellmanFord(T s){
+	if(AdjList.size()==0)
+	createAdjacencyList();
 	map<T, W> dist;
 	typename set<T>::iterator it;
 	for(it=vertices.begin(); it!=vertices.end(); it++)
@@ -241,6 +243,8 @@ map<T, int> Graph<T,W>::bfs(T source)
 	//Initialisation
 	bfsLevel.clear();
 	bfsVisit.clear();
+	createAdjacencyList();
+
 	bfsLevel[source] = 0;
 	bfsVisit[source] = true;
 	queue <T> q;
@@ -251,9 +255,12 @@ map<T, int> Graph<T,W>::bfs(T source)
 		q.pop();
 		for(int i=0;i<AdjList[u].size();i++)
 		{
-			bfsLevel[AdjList[u][i].first] = bfsLevel[u] + 1;
-			bfsVisit[AdjList[u][i].first] = true;
-			q.push(AdjList[u][i].first);
+			if(!bfsVisit[AdjList[u][i].first])
+			{
+				bfsLevel[AdjList[u][i].first] = bfsLevel[u] + 1;
+				bfsVisit[AdjList[u][i].first] = true;
+				q.push(AdjList[u][i].first);
+			}
 		}
 	}
 	return bfsLevel;
@@ -308,11 +315,15 @@ bool Graph<T, W>::hasCycleUtil(T v, map<T, bool> &visited, map<T, bool>  &recSta
  */
 template <class T, class W>
 bool Graph<T, W>::hasCycle(){
+
+	createAdjacencyList();
 	map<T, bool> visited, recStack;
 	typename set<T>::iterator it;
 	for(it=vertices.begin(); it!=vertices.end(); it++)
+	{
 		if(hasCycleUtil(*it, visited, recStack))
 			return true;
+	}
 	return false;
 }
 
