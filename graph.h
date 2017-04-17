@@ -9,7 +9,7 @@
 #include <map>
 #include "exception.h"
 #include "edge.h"
-//#include "tree.h"
+#include "tree.h"
 using namespace std;
 
 #define INF 10000000
