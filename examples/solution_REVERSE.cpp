@@ -18,7 +18,7 @@ int main()
 	map<int,int> mp;
 	mp = g.dijkstras(1);
 
-	g.printAdjacencyList();
+	//g.printAdjacencyList();
 
 	cout<<mp[n]<<endl;
 	return 0;

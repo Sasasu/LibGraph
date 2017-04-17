@@ -45,7 +45,14 @@ Tree<T, W>::Tree(Tree &Tr) {
 template <class T, class W>
 void Tree<T, W>::addEdge(T u, T v, W w)
 {
+	int flagu=0,flagv=0;
 	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
+	
+	if(Graph<T,W>::vertices.find(u)!=Graph<T,W>::vertices.end())
+		flagu = 1;
+	if(Graph<T,W>::vertices.find(v)!=Graph<T,W>::vertices.end())
+		flagv = 1;
+	
 	Graph<T,W>::vertices.insert(u);
 	Graph<T,W>::vertices.insert(v);
 
@@ -56,6 +63,13 @@ void Tree<T, W>::addEdge(T u, T v, W w)
 	}
 	catch(int x)
 	{
+		Graph<T,W>::edges.pop_back();
+	
+		if(!flagu)
+		Graph<T,W>::vertices.erase(u);
+		if(!flagv)
+		Graph<T,W>::vertices.erase(v);
+	
 		cout<<"Error : Invalid Edge added\n";
 	}
 }
