@@ -4,7 +4,7 @@
 #include <stack>
 #include "graph.h"
 
-template <class T,class W>
+template <class T, class W>
 class Tree:public Graph<T, W> {
 
 	stack<T> topologicalSortStack;
@@ -22,9 +22,10 @@ class Tree:public Graph<T, W> {
 };
 
 /*
- * Tree class Constructor(Copy Constructor)
+ * Copy Constructor
+ * Clones given tree
  * @param (Tree) Tr
- * 
+ *     Tree to clone
  */
 template <class T,class W>
 Tree<T, W>::Tree(Tree &Tr) {
@@ -32,16 +33,16 @@ Tree<T, W>::Tree(Tree &Tr) {
 	Graph<T,W>::edges      = Tr.edges;	        
 }
 
-// template <class T, class W>
-// void Tree<T, W>::addEdge(T u, T v, W w) {
-// 	if( ! (Graph<T,W>::edges.size()==0 || ( (Graph<T,W>::vertices.find(u)!=Graph<T,W>::vertices.end() && Graph<T,W>::vertices.find(v)==Graph<T,W>::vertices.end()) || (Graph<T,W>::vertices.find(u)==Graph<T,W>::vertices.end() && Graph<T,W>::vertices.find(v)!=Graph<T,W>::vertices.end())  ) ) )
-// 		throw Exception("Invalid Edge");
-
-// 	Graph<T,W>::edges.push_back(Edge<T,W>(u, v, w));
-// 	Graph<T,W>::vertices.insert(u);
-// 	Graph<T,W>::vertices.insert(v);
-// }
-
+/* 
+ * Function to add Edge to tree
+ * throws exception of type Exception if adding edge forms invalid tree
+ * @param (T) u
+ *    starting vertex
+ * @param (T) v
+ *    ending vertex
+ * @param (W) w
+ *    weight of edge(u, v)
+ */
 template <class T, class W>
 void Tree<T, W>::addEdge(T u, T v, W w)
 {
@@ -63,10 +64,10 @@ void Tree<T, W>::addEdge(T u, T v, W w)
 
 	try
 	{
-		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges,u))
-			throw 1;
+		if( !isValidTree(Graph<T,W>::vertices,Graph<T,W>::edges))
+			throw Exception("Invalid Edge Added");
 	}
-	catch(int x)
+	catch(Exception e)
 	{
 		// Graph<T,W>::edges.pop_back();
 	
@@ -75,10 +76,13 @@ void Tree<T, W>::addEdge(T u, T v, W w)
 		// if(!flagv)
 		// Graph<T,W>::vertices.erase(v);
 	
-		cout<<"Error : Invalid Edge added\n";
+		cout<<"Error : "<<e.getMessage()<<endl;
 	}
 }
 
+/*
+ * Function to check if tree is valid
+ */
 template <class T,class W>
 bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e,T s)
 {
@@ -92,6 +96,9 @@ bool Tree<T,W>::isValidTree(set<T> v, vector< Edge<T,W> > e,T s)
 		return false;
 }
 
+/*
+ * Function to check if tree is connected
+ */
 template <class T,class W>
 bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e,T s)
 {
@@ -108,6 +115,12 @@ bool Tree<T,W>::checkConnected(set<T> v,vector< Edge<T,W > > e,T s)
 	return true;
 }
 
+/*
+ * Function to explore source 
+ * used by topological sort
+ * @param (T) source
+ *     source of exploration
+ */
 template <class T,class W>
 void Tree<T,W>::explore(T source) 
 {
@@ -121,7 +134,11 @@ void Tree<T,W>::explore(T source)
 	topologicalSortStack.push(source);
 }	
 
-
+/*
+ * Function to sort tree topologically
+ * @returns (vactor<T>)
+ *    topological sequence of tree
+ */
 template <class T,class W>
 vector<T> Tree<T,W>::topologicalSort() 
 {
