@@ -130,7 +130,6 @@ try{
 #### Topological Sort
 
 Topological sort of the Tree vector of the vertices listed topologically
-<<<<<<< dfbb3550840080c042f62ab7fc2030e9877a7ca5
 ```c++
 vector<int> tpSort = T.topologicalSort();
 ```
