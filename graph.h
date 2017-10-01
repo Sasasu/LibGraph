@@ -30,12 +30,14 @@ class Graph {
 	
 	public: 
 	Graph(){}
-	Graph(Graph&);
+	Graph(const Graph&);
 	void addEdge(T, T, W);
 	void createAdjacencyList();
+	map<T, vector<pair<T, W>>> getAdjacencyList();
 	void printAdjacencyList();
 	void createAdjacencyMatrix();
 	void printAdjacencyMatrix();
+	map<T, map<T, W>> getAdjacencyMatrix();
 	map<T, W> dijkstras(T);
 	map<T, W> bellmanFord(T);
 	map<T, W> getShortestPathsFrom(T, bool negative = false);
@@ -46,7 +48,7 @@ class Graph {
 	void printLevel(T);
 	bool hasCycleUtil(T, map<T, bool>&, map<T, bool>&);
 	bool hasCycle();
-	set<T,W> getVertices();
+	set<T,less<W>> getVertices();
 	vector<Edge<T,W> > getEdges();
 	Tree<T, W> minimumSpanningTree(T);
 };
@@ -58,7 +60,7 @@ class Graph {
  *    Graph to clone
  */
 template <class T, class W>
-Graph<T, W>::Graph(Graph &G) {
+Graph<T, W>::Graph(const Graph &G) {
 	vertices   = G.vertices;       
 	edges      = G.edges;	        
 }
@@ -85,7 +87,7 @@ void Graph<T, W>::addEdge(T u, T v, W w){
  *    set of vertices
  */
 template<class T,class W>
-set<T,W> Graph<T,W>::getVertices()
+set<T,less<W>> Graph<T,W>::getVertices()
 {
 	return vertices;
 }
@@ -114,6 +116,16 @@ void Graph<T,W>::createAdjacencyList(){
 		Edge<T,W> e = edges[i];
 		AdjList[e.u].push_back(make_pair(e.v, e.w));
 	}
+}
+
+/*
+ * Funtion to return Ajavency list
+ */
+template <class T, class W>
+map<T, vector<pair<T, W>>> Graph<T, W>::getAdjacencyList() {
+	if (AdjList.empty())
+		createAdjacencyList();
+	return AdjList;
 }
 
 /*
@@ -158,6 +170,16 @@ void Graph<T, W>::printAdjacencyMatrix(){
 }
 
 /*
+ * Function to return Adjavency Matrix
+ */
+template <class T, class W>
+map<T, map<T, W>> Graph<T, W>::getAdjacencyMatrix() {
+	if (AdjMat.empty())
+		createAdjacencyMatrix();
+	return AdjMat;
+}
+
+/*
  * Function to calculate Single Source Shortest Paths using Dijkstra's Algorithm
  * For graphs with positive edge weights only
  * For graphs consiting negative edge weights, use bellmanFord(T)
@@ -185,6 +207,8 @@ map<T, W> Graph<T, W>::dijkstras(T s){
 			pair< T, W> v_p = AdjList[u][i];
 			T v = v_p.first;
 			W w = v_p.second;
+			if (w < 0)
+				throw Exception("Graph contain negative margin");
 			if(dist[v] > dist[u]+w){
 				dist[v] = dist[u]+w;
 				q.push(make_pair(dist[v], v));
@@ -212,7 +236,7 @@ map<T, W> Graph<T, W>::bellmanFord(T s){
 		dist[*it] = INF;
 	dist[s] = 0;
 	typename vector< Edge<T, W> >::iterator e;
-	for(int i=0; i<vertices.size()-1;i++){
+	for(int i=0; i< static_cast<int>(vertices.size()) -1;i++){
 		for(e=edges.begin(); e!=edges.end(); e++){
 			T u = e->u,
 			  v = e->v;

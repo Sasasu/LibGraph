@@ -13,7 +13,7 @@ class Tree:public Graph<T, W> {
 
 	public:
 	Tree(){};
-	Tree(Tree&); 
+	Tree(const Tree&); 
 	void addEdge(T,T,W);
 	bool isValidTree(set<T>, vector< Edge<T, W > >,T);
 	bool checkConnected(set<T>, vector< Edge<T, W > >,T);
@@ -28,7 +28,7 @@ class Tree:public Graph<T, W> {
  *     Tree to clone
  */
 template <class T,class W>
-Tree<T, W>::Tree(Tree &Tr) {
+Tree<T, W>::Tree(const Tree &Tr) {
 	Graph<T,W>::vertices   = Tr.vertices;       
 	Graph<T,W>::edges      = Tr.edges;	        
 }

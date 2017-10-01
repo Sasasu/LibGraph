@@ -15,6 +15,9 @@ class Edge {
 	W getWeight(){
 		return w;
 	}
+	bool operator==(const Edge<T, W>& _e) const {
+		return _e.u == u && _e.v == v && _e.w == w;
+	}
 };
 
 #endif
